@@ -1,10 +1,10 @@
 class Project {
   #title;
-  #itemsList;
+  #itemList;
 
-  constructor(title, itemsList = []) {
+  constructor(title, itemList = []) {
     this.#title = title;
-    this.#itemsList = itemsList;
+    this.#itemList = itemList;
   }
 
   get title() {
@@ -15,12 +15,16 @@ class Project {
     this.#title = value;
   }
 
-  get itemsList() {
-    return this.#itemsList;
+  get itemList() {
+    return this.#itemList;
   }
 
   addItem = (item) => {
-    this.#itemsList.push(item);
+    this.#itemList.push(item);
+  };
+
+  removeItem = (index) => {
+    this.#itemList.splice(index, 1);
   };
 }
 
