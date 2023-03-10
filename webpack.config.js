@@ -5,9 +5,6 @@ module.exports = {
   mode: "development",
   entry: {
     index: "./src/index.js",
-    item: "./src/item.js",
-    note: "./src/note.js",
-    project: "./src/project.js",
   },
   module: {
     rules: [

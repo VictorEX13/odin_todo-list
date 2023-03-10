@@ -2,14 +2,14 @@
 
 @font-face {
     font-family: 'Libre Basker Viller';
-    src: url('./LibreBaskerville-Regular.ttf') format('truetype');
+    src: url('../assets/LibreBaskerville-Regular.ttf') format('truetype');
     font-weight: 600;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Roboto';
-    src: url('./Roboto-Regular.ttf') format('truetype');
+    src: url('../assets/Roboto-Regular.ttf') format('truetype');
     font-weight: 600;
     font-style: normal;
 }
@@ -73,23 +73,27 @@ ul {
 main {
     grid-area: 2 / 2 / 3 / -1;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
     padding: 4% 5%;
     font-family: 'Roboto';
 }
 
+.notes-container {
+    display: grid;
+    width: 100%;
+    gap: 1%;
+    grid-template-columns: repeat(3, 30%);
+    grid-auto-rows: 30%;
+    grid-auto-flow: row;
+    overflow: scroll;
+}
+
 .note-article {
-    display: inline-flex;
-    flex: 0 1 20%;
     background-color: rgb(230, 230, 230);
     padding: 2%;
-    height: fit-content;
 }
 
 .note-article > div {
     display: flex;
-    flex: 1;
     justify-content: space-between;
 }
 
