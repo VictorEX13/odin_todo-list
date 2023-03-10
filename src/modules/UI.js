@@ -6,11 +6,13 @@ import Note from "./note.js";
 
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 import "../styles/main.css";
 
 class UI {
   static projectList = new ProjectList();
   static noteList = new NoteList();
+  static selectedTab = 0;
 
   static loadHomePage() {
     const body = document.querySelector("body");
@@ -22,11 +24,13 @@ class UI {
       UI.defaultFooter()
     );
 
-    UI.renderNotes();
-
     library.add(faXmark);
+    library.add(faPlus);
     dom.watch();
   }
+
+  // DEFAULT COMPONENTS
+  // -----------------------------------------------------
 
   static defaultHeader() {
     const header = document.createElement("header");
@@ -45,6 +49,11 @@ class UI {
     const list = document.createElement("ul");
     const listItem = document.createElement("li");
     const listItemLink = document.createElement("a");
+    const addButton = document.createElement("button");
+    const plusIcon = document.createElement("i");
+
+    addButton.classList.add("add-button");
+    plusIcon.classList.add("fa-solid", "fa-plus");
     listItemLink.setAttribute("href", "#");
 
     const inbox = listItem.cloneNode(true);
@@ -67,8 +76,9 @@ class UI {
     projectListClone.classList.add("project-list");
 
     const addProject = listItem.cloneNode(true);
+    addProject.appendChild(plusIcon.cloneNode(true));
     addProject.appendChild(listItemLink.cloneNode(true));
-    addProject.firstChild.textContent = "+ Add Project";
+    addProject.lastChild.textContent = "Add Project";
 
     projectListClone.appendChild(addProject);
 
@@ -85,7 +95,16 @@ class UI {
     list.append(inbox, todayItems, thisWeekItems, projects, notes);
 
     nav.appendChild(list);
-    aside.appendChild(nav);
+    addButton.appendChild(plusIcon.cloneNode(true));
+
+    addButton.addEventListener("click", () => {
+      const modal = document.querySelector(".modal");
+      if (!modal) {
+        UI.renderAddItemModal(UI.selectedTab);
+      }
+    });
+
+    aside.append(nav, addButton);
 
     return aside;
   }
@@ -105,6 +124,143 @@ class UI {
     footer.appendChild(copyright);
 
     return footer;
+  }
+
+  // Dynamic Components
+  // -----------------------------------------------------
+
+  static renderAddItemModal(selectedIndex) {
+    const body = document.querySelector("body");
+    const modal = document.createElement("div");
+    const form = document.createElement("form");
+    const inputGroup = document.createElement("div");
+    const inputContainer = document.createElement("div");
+
+    const title = document.createElement("input");
+    const description = document.createElement("textarea");
+    const submitButton = document.createElement("button");
+    const closeButton = document.createElement("button");
+
+    const titleLabel = document.createElement("label");
+    const descriptionLabel = document.createElement("label");
+
+    title.id = "title";
+    description.id = "description";
+
+    title.setAttribute("required", "true");
+    description.setAttribute("required", "true");
+
+    titleLabel.setAttribute("for", "title");
+    descriptionLabel.setAttribute("for", "description");
+    titleLabel.textContent = "Title";
+    descriptionLabel.textContent = "Description";
+
+    const xIcon = document.createElement("i");
+    xIcon.classList.add("fa-solid", "fa-xmark");
+
+    modal.classList.add("modal");
+    inputContainer.classList.add("input-container");
+    inputGroup.classList.add("input-group");
+    submitButton.classList.add("submit-button");
+    closeButton.classList.add("times-button");
+
+    submitButton.textContent = "Add";
+
+    const titleContainer = inputContainer.cloneNode(true);
+    const descriptionContainer = inputContainer.cloneNode(true);
+
+    titleContainer.append(titleLabel, title);
+    descriptionContainer.append(descriptionLabel, description);
+
+    closeButton.appendChild(xIcon);
+    inputGroup.append(titleContainer, descriptionContainer);
+
+    if (selectedIndex >= 0) {
+      const dueDate = document.createElement("input");
+      const priority = document.createElement("select");
+
+      const low = document.createElement("option");
+      const normal = document.createElement("option");
+      const high = document.createElement("option");
+
+      const dueDateLabel = document.createElement("label");
+      const priorityLabel = document.createElement("label");
+
+      dueDate.id = "due-date";
+      priority.id = "priority";
+
+      dueDateLabel.setAttribute("for", "due-date");
+      priorityLabel.setAttribute("for", "priority");
+      dueDateLabel.textContent = "Date";
+      priorityLabel.textContent = "Priority";
+
+      dueDate.setAttribute("required", true);
+      priority.setAttribute("required", true);
+
+      dueDate.setAttribute("type", "date");
+      low.setAttribute("value", "low");
+      normal.setAttribute("value", "normal");
+      high.setAttribute("value", "high");
+
+      low.textContent = "low";
+      normal.textContent = "normal";
+      high.textContent = "high";
+
+      priority.append(low, normal, high);
+
+      const dueDateContainer = inputContainer.cloneNode(true);
+      const priorityContainer = inputContainer.cloneNode(true);
+
+      dueDateContainer.append(dueDateLabel, dueDate);
+      priorityContainer.append(priorityLabel, priority);
+
+      inputGroup.append(dueDateContainer, priorityContainer);
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const submittedTitle = document.querySelector("#title");
+        const submittedDescription = document.querySelector("#description");
+        const submittedDueDate = document.querySelector("#due-date");
+        const submittedPriority = document.querySelector("#priority");
+
+        UI.projectList.projects[selectedIndex].addItem(
+          new Item(
+            submittedTitle.value,
+            submittedDescription.value,
+            submittedDueDate.value,
+            submittedPriority.value
+          )
+        );
+
+        submittedTitle.value = "";
+        submittedDescription.value = "";
+        submittedDueDate.value = "";
+        submittedPriority.value = "low";
+      });
+    } else if (selectedIndex < 0) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const submittedTitle = document.querySelector("#title");
+        const submittedDescription = document.querySelector("#title");
+        UI.noteList.addNote(
+          new Note(submittedTitle.value, submittedDescription.value)
+        );
+
+        submittedTitle.value = "";
+        submittedDescription.value = "";
+      });
+    }
+
+    closeButton.addEventListener("click", () => {
+      modal.parentElement.removeChild(modal);
+    });
+
+    form.append(inputGroup, submitButton);
+
+    modal.append(form, closeButton);
+    body.appendChild(modal);
   }
 
   static createTodoArticle(
@@ -144,8 +300,8 @@ class UI {
     const title = document.createElement("h3");
     const description = document.createElement("p");
     const deleteButton = document.createElement("button");
-    const icon = document.createElement("i");
-    icon.classList.add("fa-solid", "fa-xmark");
+    const xIcon = document.createElement("i");
+    xIcon.classList.add("fa-solid", "fa-xmark");
 
     title.textContent = titleValue;
     description.textContent = descriptionValue;
@@ -153,8 +309,9 @@ class UI {
     noteContent.append(title, description);
 
     article.classList.add("note-article");
+    deleteButton.classList.add("times-button");
 
-    deleteButton.appendChild(icon);
+    deleteButton.appendChild(xIcon);
 
     div.append(noteContent, deleteButton);
 

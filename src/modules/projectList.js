@@ -8,7 +8,7 @@ class ProjectList {
     this.#projects.push(new Project("Inbox"));
   }
 
-  get project() {
+  get projects() {
     return this.#projects;
   }
 
