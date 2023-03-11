@@ -7,6 +7,8 @@ import Note from "./note.js";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
+import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons/faPenToSquare";
 import "../styles/main.css";
 
 class UI {
@@ -26,6 +28,8 @@ class UI {
 
     library.add(faXmark);
     library.add(faPlus);
+    library.add(faCheck);
+    library.add(faPenToSquare);
     dom.watch();
   }
 
@@ -263,6 +267,31 @@ class UI {
     body.appendChild(modal);
   }
 
+  static renderTodos() {
+    const main = document.querySelector("main");
+
+    const container = document.createElement("div");
+    container.classList.add("todos-container");
+
+    for (
+      let i = 0;
+      i < UI.projectList.projects[UI.selectedTab].itemList.length;
+      i++
+    ) {
+      container.append(
+        UI.createTodoArticle(
+          UI.projectList.projects[UI.selectedTab].itemList[i].title,
+          UI.projectList.projects[UI.selectedTab].itemList[i].dueDate,
+          UI.projectList.projects[UI.selectedTab].itemList[i].priority,
+          UI.projectList.projects[UI.selectedTab].itemList[i].complete
+        )
+      );
+    }
+
+    main.replaceChildren();
+    main.appendChild(container);
+  }
+
   static createTodoArticle(
     titleValue,
     dueDateValue,
@@ -270,6 +299,50 @@ class UI {
     completeValue
   ) {
     const article = document.createElement("article");
+    const checkComplete = document.createElement("div");
+    const todoTitle = document.createElement("span");
+    const todoDueDate = document.createElement("span");
+    const todoEdit = document.createElement("div");
+    const todoDelete = document.createElement("div");
+
+    const checkIcon = document.createElement("i");
+    const editIcon = document.createElement("i");
+    const deleteIcon = document.createElement("i");
+
+    todoTitle.classList.add("todo-title");
+    todoDueDate.classList.add("todo-due-date");
+    checkComplete.classList.add("todo-check");
+    todoEdit.classList.add("todo-edit");
+    todoDelete.classList.add("todo-delete");
+
+    checkIcon.classList.add("fa-solid", "fa-check");
+    editIcon.classList.add("fa-regular", "fa-pen-to-square");
+    deleteIcon.classList.add("fa-solid", "fa-xmark");
+
+    article.classList.add("todo-article");
+
+    priorityValue === "low"
+      ? article.classList.add("low")
+      : priorityValue === "normal"
+      ? article.classList.add("normal")
+      : article.classList.add("high");
+
+    todoTitle.textContent = titleValue;
+    todoDueDate.textContent = dueDateValue;
+
+    completeValue && checkComplete.appendChild(checkIcon);
+    todoEdit.appendChild(editIcon);
+    todoDelete.appendChild(deleteIcon);
+
+    checkComplete.addEventListener("click", () => {
+      const checkIcon = checkComplete.hasChildNodes();
+
+      checkIcon
+        ? checkComplete.replaceChildren()
+        : checkComplete.appendChild(checkIcon);
+    });
+
+    article.append(checkComplete, todoTitle, todoDueDate, todoEdit, todoDelete);
 
     return article;
   }

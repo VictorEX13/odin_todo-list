@@ -1,272 +1,318 @@
 /* General */
 
 @font-face {
-    font-family: 'Libre Basker Viller';
-    src: url('../assets/LibreBaskerville-Regular.ttf') format('truetype');
-    font-weight: 600;
-    font-style: normal;
+  font-family: "Libre Basker Viller";
+  src: url("../assets/LibreBaskerville-Regular.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('../assets/Roboto-Regular.ttf') format('truetype');
-    font-weight: 600;
-    font-style: normal;
+  font-family: "Roboto";
+  src: url("../assets/Roboto-Regular.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 :root {
-    font-size: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    --main-color:rgb(94, 244, 154);
-    --main-color-dark:rgb(60, 161, 101);
-    --sub-color: rgb(187, 189, 29);
+  font-size: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  --main-color: rgb(94, 244, 154);
+  --main-color-dark: rgb(60, 161, 101);
+  --sub-color: rgb(187, 189, 29);
 }
 
 /* Blocks */
 
 body {
-    display: grid;
-    grid-template-columns: 25% 75%;
-    grid-template-rows: 10% 85% 5%;
-    height: 100vh;
-    width: 100vw;
+  display: grid;
+  grid-template-columns: 25% 75%;
+  grid-template-rows: 10% 85% 5%;
+  height: 100vh;
+  width: 100vw;
 }
 
 header {
-    display: flex;
-    grid-area: 1 / 1 / 2 / -1;
-    align-items: center;
-    padding: 1% 2%;
-    background-color: var(--main-color);
-    border-bottom: 0.2rem solid var(--sub-color);
-    font-family: "Libre Basker Viller";
-    color: white;
+  display: flex;
+  grid-area: 1 / 1 / 2 / -1;
+  align-items: center;
+  padding: 1% 2%;
+  background-color: var(--main-color);
+  border-bottom: 0.2rem solid var(--sub-color);
+  font-family: "Libre Basker Viller";
+  color: white;
 }
 
 aside {
-    grid-area: 2 / 1 / 3 / 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10%;
-    background-color: rgb(230, 230, 230);
-    font-family: 'Roboto';
+  grid-area: 2 / 1 / 3 / 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10%;
+  background-color: rgb(230, 230, 230);
+  font-family: "Roboto";
 }
 
 ul {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .project-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5%;
 }
 
 main {
-    grid-area: 2 / 2 / 3 / -1;
-    display: flex;
-    padding: 4% 5%;
-    font-family: 'Roboto';
+  grid-area: 2 / 2 / 3 / -1;
+  display: flex;
+  padding: 4% 5%;
+  font-family: "Roboto";
+}
+
+.todos-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  overflow: scroll;
+}
+
+.todo-article {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  padding: 1%;
+  align-items: center;
+}
+
+.low {
+  background-color: var(--main-color);
+}
+
+.normal {
+  background-color: var(--sub-color);
+}
+
+.high {
+  background-color: rgb(148, 0, 0);
 }
 
 .notes-container {
-    display: grid;
-    width: 100%;
-    gap: 1%;
-    grid-template-columns: repeat(3, 30%);
-    grid-auto-rows: 30%;
-    grid-auto-flow: row;
-    overflow: scroll;
+  display: grid;
+  width: 100%;
+  gap: 1%;
+  grid-template-columns: repeat(3, 30%);
+  grid-auto-rows: 30%;
+  grid-auto-flow: row;
+  overflow: scroll;
 }
 
 .note-article {
-    background-color: rgb(230, 230, 230);
-    padding: 2%;
+  background-color: rgb(230, 230, 230);
+  padding: 2%;
 }
 
 .note-article > div {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .note-article > div > div {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 footer {
-    display: flex;
-    grid-area: 3 / 1 / -1 / -1;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--main-color);
-    border-top: 0.2rem solid var(--sub-color);
-    font-family: "Libre Basker Viller";
-    color: white;
+  display: flex;
+  grid-area: 3 / 1 / -1 / -1;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--main-color);
+  border-top: 0.2rem solid var(--sub-color);
+  font-family: "Libre Basker Viller";
+  color: white;
 }
 
 .modal {
-    display: flex;
-    position: fixed;
-    min-width: 40vw;
-    min-height: 30vh;
-    top: 30%;
-    left: 30%;
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
-    padding: 2% 1% 2% 2%;
-    gap: 10px;
-    background-color: rgb(233, 233, 233);
+  display: flex;
+  position: fixed;
+  min-width: 40vw;
+  min-height: 30vh;
+  top: 20%;
+  left: 30%;
+  border: 1px solid var(--main-color);
+  border-radius: 5px;
+  padding: 2% 1% 2% 2%;
+  gap: 10px;
+  background-color: rgb(233, 233, 233);
 }
 
 form {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: space-between;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
 }
 
 .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 /* Elements */
 
 h1 {
-    font-size: 4rem;
+  font-size: 4rem;
 }
 
 h2 {
-    font-size: 3.4rem;
+  font-size: 3.4rem;
 }
 
 h3 {
-    font-size: 3rem;
+  font-size: 3rem;
 }
 
 small {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 p {
-    font-size: 1.6rem;
+  font-size: 1.6rem;
 }
 
 li {
-    list-style: none;
-    font-size: 3rem;
-    font-weight: bold;
-    width: 100%;
+  list-style: none;
+  font-size: 3rem;
+  font-weight: bold;
+  width: 100%;
 }
 
 .project-list li {
-    font-size: 2rem;
-    font-weight: 300;
-    width: 100%;
-    display: flex;
-    align-items: center;
+  font-size: 2rem;
+  font-weight: 300;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 a {
-    display: inline-block;
-    text-decoration: none;
-    width: 100%;
-    border: 1px solid transparent;
-    border-radius: 5px;
+  display: inline-block;
+  text-decoration: none;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 5px;
 }
 
 input,
 textarea,
 select {
-    appearance: none;
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
-    padding: 1%;
+  appearance: none;
+  border: 1px solid var(--main-color);
+  border-radius: 5px;
+  padding: 1%;
 }
 
-textarea
+.todo-check {
+  padding: 1%;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.todo-check,
+.todo-edit,
+.todo-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.todo-title {
+  flex: 1;
+}
 
 /* Modifiers */
 
 a:link {
-    color: black;
+  color: black;
 }
 
 a:visited {
-    color: black;
+  color: black;
 }
 
 a:hover {
-    background-color: rgb(170, 170, 170);
+  background-color: rgb(170, 170, 170);
 }
 
 .project-list li {
-    border: 1px solid transparent;
-    border-radius: 5px;
+  border: 1px solid transparent;
+  border-radius: 5px;
 }
 
 .add-button {
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    border-radius: 50%;
-    background-color: transparent;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: transparent;
 }
 
 .submit-button {
-    display: flex;
-    width: 80px;
-    height: 30px;
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
-    padding: 3%;
-    background-color: var(--main-color);
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  width: 80px;
+  height: 30px;
+  border: 1px solid var(--main-color);
+  border-radius: 5px;
+  padding: 3%;
+  background-color: var(--main-color);
+  justify-content: center;
+  align-items: center;
 }
 
 .times-button {
-    display: flex;
-    width: 20px;
-    height: 20px;
-    border: 1px solid transparent;
-    border-radius: 50%;
-    padding: 3%;
-    background-color: transparent;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  width: 20px;
+  height: 20px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  padding: 3%;
+  background-color: transparent;
+  justify-content: center;
+  align-items: center;
 }
 
 .submit-button:hover {
-    background-color: var(--main-color-dark);
-    border-color: var(--main-color-dark);
+  background-color: var(--main-color-dark);
+  border-color: var(--main-color-dark);
 }
 
 .project-list li:hover,
 .add-button:hover,
 .times-button:hover {
-    cursor: pointer;
-    background-color: rgb(170, 170, 170);
+  cursor: pointer;
+  background-color: rgb(170, 170, 170);
 }
