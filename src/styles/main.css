@@ -67,11 +67,22 @@ ul {
   gap: 10px;
 }
 
+.projects-link {
+  display: flex;
+  flex-direction: column;
+}
+
+.projects-link:has(> .project-list > li) {
+  gap: 5px;
+}
+
 .project-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   padding: 5%;
+  max-height: 150px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 main {
@@ -209,12 +220,15 @@ li {
   width: 100%;
 }
 
-.project-list li {
+.project-list li,
+.add-project {
   font-size: 2rem;
   font-weight: 300;
   width: 100%;
   display: flex;
   align-items: center;
+  border: 1px solid transparent;
+  border-radius: 5px;
 }
 
 a {
@@ -268,11 +282,6 @@ a:hover {
   background-color: rgb(170, 170, 170);
 }
 
-.project-list li {
-  border: 1px solid transparent;
-  border-radius: 5px;
-}
-
 .add-button {
   width: 50px;
   height: 50px;
@@ -311,6 +320,7 @@ a:hover {
 }
 
 .project-list li:hover,
+.add-project:hover,
 .add-button:hover,
 .times-button:hover {
   cursor: pointer;

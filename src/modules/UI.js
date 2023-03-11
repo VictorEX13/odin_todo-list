@@ -80,15 +80,21 @@ class UI {
     projectListClone.classList.add("project-list");
 
     const addProject = listItem.cloneNode(true);
+    addProject.classList.add("add-project");
     addProject.appendChild(plusIcon.cloneNode(true));
     addProject.appendChild(listItemLink.cloneNode(true));
     addProject.lastChild.textContent = "Add Project";
 
-    projectListClone.appendChild(addProject);
+    addProject.addEventListener("click", () => {
+      const modal = document.querySelector(".modal");
+      if (!modal) {
+        UI.renderAddProjectModal();
+      }
+    });
 
     projects.textContent = "Projects";
 
-    projects.appendChild(projectListClone);
+    projects.append(projectListClone, addProject);
 
     inbox.classList.add("inbox-link");
     todayItems.classList.add("today-link");
@@ -132,6 +138,68 @@ class UI {
 
   // Dynamic Components
   // -----------------------------------------------------
+
+  static renderAddProjectModal() {
+    const body = document.querySelector("body");
+    const modal = document.createElement("modal");
+    const form = document.createElement("form");
+    const inputGroup = document.createElement("div");
+    const inputContainer = document.createElement("div");
+
+    const title = document.createElement("input");
+    const submitButton = document.createElement("button");
+    const closeButton = document.createElement("button");
+
+    const titleLabel = document.createElement("label");
+
+    title.id = "title";
+
+    title.setAttribute("required", "true");
+
+    titleLabel.setAttribute("for", "title");
+    titleLabel.textContent = "Title";
+
+    const xIcon = document.createElement("i");
+    xIcon.classList.add("fa-solid", "fa-xmark");
+
+    modal.classList.add("modal");
+    inputContainer.classList.add("input-container");
+    inputGroup.classList.add("input-group");
+    submitButton.classList.add("submit-button");
+    closeButton.classList.add("times-button");
+
+    submitButton.textContent = "Add";
+
+    const titleContainer = inputContainer.cloneNode(true);
+
+    titleContainer.append(titleLabel, title);
+
+    closeButton.appendChild(xIcon);
+    inputGroup.appendChild(titleContainer);
+
+    closeButton.addEventListener("click", () => {
+      modal.parentElement.removeChild(modal);
+    });
+
+    form.append(inputGroup, submitButton);
+
+    form.addEventListener("submit", (e) => {
+      const submittedTitle = document.querySelector("#title");
+
+      UI.projectList.addProject(new Project(submittedTitle.value));
+
+      console.log(UI.projectList);
+
+      submittedTitle.value = "";
+
+      UI.renderProjects();
+
+      e.preventDefault();
+    });
+
+    modal.append(form, closeButton);
+    body.appendChild(modal);
+  }
 
   static renderAddItemModal(selectedIndex) {
     const body = document.querySelector("body");
@@ -265,6 +333,19 @@ class UI {
 
     modal.append(form, closeButton);
     body.appendChild(modal);
+  }
+
+  static renderProjects() {
+    const navProjectList = document.querySelector(".project-list");
+
+    navProjectList.replaceChildren();
+
+    for (let i = 1; i < UI.projectList.projects.length; i++) {
+      const projectListItem = document.createElement("li");
+      projectListItem.textContent = UI.projectList.projects[i].title;
+
+      navProjectList.appendChild(projectListItem);
+    }
   }
 
   static renderTodos() {
