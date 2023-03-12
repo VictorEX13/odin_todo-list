@@ -26,6 +26,8 @@ class UI {
       UI.defaultFooter()
     );
 
+    UI.renderTodos();
+
     library.add(faXmark);
     library.add(faPlus);
     library.add(faCheck);
@@ -65,6 +67,10 @@ class UI {
     const thisWeekItems = listItem.cloneNode(true);
     const projects = listItem.cloneNode(true);
     const notes = listItem.cloneNode(true);
+
+    inbox.setAttribute("data-index", "0");
+    todayItems.setAttribute("data-index", "1");
+    thisWeekItems.setAttribute("data-index", "2");
 
     inbox.appendChild(listItemLink.cloneNode(true));
     todayItems.appendChild(listItemLink.cloneNode(true));
@@ -114,6 +120,45 @@ class UI {
       }
     });
 
+    inbox.addEventListener("click", () => {
+      const selectedTabTitle = document.querySelector(".tab-title");
+
+      UI.selectedTab = inbox.getAttribute("data-index");
+
+      selectedTabTitle.textContent = "Inbox";
+
+      UI.renderTodos(UI.selectedTab);
+    });
+
+    todayItems.addEventListener("click", () => {
+      const selectedTabTitle = document.querySelector(".tab-title");
+
+      UI.selectedTab = todayItems.getAttribute("data-index");
+
+      selectedTabTitle.textContent = "Today";
+
+      UI.renderTodos(UI.selectedTab);
+    });
+
+    thisWeekItems.addEventListener("click", () => {
+      const selectedTabTitle = document.querySelector(".tab-title");
+
+      UI.selectedTab = thisWeekItems.getAttribute("data-index");
+
+      selectedTabTitle.textContent = "This Week";
+
+      UI.renderTodos(UI.selectedTab);
+    });
+
+    notes.addEventListener("click", () => {
+      const selectedTabTitle = document.querySelector(".tab-title");
+
+      selectedTabTitle.textContent = "Notes";
+
+      UI.selectedTab = -1;
+      UI.renderNotes();
+    });
+
     aside.append(nav, addButton);
 
     return aside;
@@ -121,6 +166,17 @@ class UI {
 
   static defaultMain() {
     const main = document.createElement("main");
+    const mainSection = document.createElement("section");
+    const selectedTabTitle = document.createElement("h2");
+
+    mainSection.classList.add("tab-section");
+    selectedTabTitle.classList.add("tab-title");
+
+    selectedTabTitle.textContent = "Inbox";
+
+    mainSection.appendChild(selectedTabTitle);
+
+    main.appendChild(mainSection);
 
     return main;
   }
@@ -305,6 +361,17 @@ class UI {
           )
         );
 
+        const container = document.querySelector(".todos-container");
+
+        container.appendChild(
+          UI.createTodoArticle(
+            submittedTitle.value,
+            submittedDueDate.value,
+            submittedPriority.value,
+            false
+          )
+        );
+
         submittedTitle.value = "";
         submittedDescription.value = "";
         submittedDueDate.value = "";
@@ -312,16 +379,25 @@ class UI {
       });
     } else if (selectedIndex < 0) {
       form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
         const submittedTitle = document.querySelector("#title");
-        const submittedDescription = document.querySelector("#title");
+        const submittedDescription = document.querySelector("#description");
         UI.noteList.addNote(
           new Note(submittedTitle.value, submittedDescription.value)
         );
 
         submittedTitle.value = "";
         submittedDescription.value = "";
+
+        const container = document.querySelector(".notes-container");
+
+        container.appendChild(
+          UI.createNoteArticle(
+            UI.noteList.notes[UI.noteList.notes.length - 1].title,
+            UI.noteList.notes[UI.noteList.notes.length - 1].description
+          )
+        );
+
+        e.preventDefault();
       });
     }
 
@@ -340,16 +416,30 @@ class UI {
 
     navProjectList.replaceChildren();
 
-    for (let i = 1; i < UI.projectList.projects.length; i++) {
+    for (let i = 3; i < UI.projectList.projects.length; i++) {
       const projectListItem = document.createElement("li");
       projectListItem.textContent = UI.projectList.projects[i].title;
+
+      projectListItem.setAttribute("data-index", i.toString());
+
+      projectListItem.addEventListener("click", () => {
+        const selectedTabTitle = document.querySelector(".tab-title");
+
+        UI.selectedTab = projectListItem.getAttribute("data-index");
+
+        selectedTabTitle.textContent =
+          UI.projectList.projects[UI.selectedTab].title;
+
+        UI.renderTodos(UI.selectedTab);
+      });
 
       navProjectList.appendChild(projectListItem);
     }
   }
 
   static renderTodos() {
-    const main = document.querySelector("main");
+    const selectedTabSection = document.querySelector(".tab-section");
+    const selectedTabContainer = document.querySelector(".tab-section>div");
 
     const container = document.createElement("div");
     container.classList.add("todos-container");
@@ -369,8 +459,10 @@ class UI {
       );
     }
 
-    main.replaceChildren();
-    main.appendChild(container);
+    if (selectedTabContainer) {
+      selectedTabSection.removeChild(selectedTabContainer);
+    }
+    selectedTabSection.appendChild(container);
   }
 
   static createTodoArticle(
@@ -429,7 +521,8 @@ class UI {
   }
 
   static renderNotes() {
-    const main = document.querySelector("main");
+    const selectedTabSection = document.querySelector(".tab-section");
+    const selectedTabContainer = document.querySelector(".tab-section>div");
 
     const container = document.createElement("div");
     container.classList.add("notes-container");
@@ -443,8 +536,10 @@ class UI {
       );
     }
 
-    main.replaceChildren();
-    main.appendChild(container);
+    if (selectedTabContainer) {
+      selectedTabSection.removeChild(selectedTabContainer);
+    }
+    selectedTabSection.appendChild(container);
   }
 
   static createNoteArticle(titleValue, descriptionValue) {

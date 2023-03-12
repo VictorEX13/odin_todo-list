@@ -92,12 +92,19 @@ main {
   font-family: "Roboto";
 }
 
+.tab-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
 .todos-container {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 10px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .todo-article {
@@ -122,12 +129,13 @@ main {
 
 .notes-container {
   display: grid;
+  flex: 1;
   width: 100%;
   gap: 1%;
   grid-template-columns: repeat(3, 30%);
   grid-auto-rows: 30%;
   grid-auto-flow: row;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .note-article {
