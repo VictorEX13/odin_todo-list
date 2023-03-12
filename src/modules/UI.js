@@ -4,6 +4,7 @@ import Project from "./project.js";
 import Item from "./item.js";
 import Note from "./note.js";
 
+import { format } from "date-fns";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
@@ -527,7 +528,10 @@ class UI {
 
       articleTitle.textContent = submittedTitle.value;
 
-      articleDueDate.textContent = submittedDueDate.value;
+      articleDueDate.textContent = format(
+        new Date(submittedDueDate.value),
+        "MM/dd/yyyy"
+      );
 
       submittedTitle.value = "";
       submittedDescription.value = "";
@@ -564,7 +568,7 @@ class UI {
     title.textContent = selectedItem.title;
     selectedProject.textContent = projectTitle;
     description.textContent = selectedItem.description;
-    dueDate.textContent = selectedItem.dueDate;
+    dueDate.textContent = format(new Date(selectedItem.dueDate), "MM/dd/yyyy");
     priority.textContent = selectedItem.priority;
     status.textContent = selectedItem.complete ? "Completed" : "Uncompleted";
 
@@ -587,7 +591,7 @@ class UI {
 
     modal.classList.add("modal");
     fieldContainer.classList.add("field-container");
-    detailsContainer.classList.add('details-container')
+    detailsContainer.classList.add("details-container");
     closeButton.classList.add("times-button");
 
     const selectedProjectContainer = fieldContainer.cloneNode(true);
@@ -720,7 +724,7 @@ class UI {
 
     todoTitle.textContent = titleValue;
     todoDetails.textContent = "Details";
-    todoDueDate.textContent = dueDateValue;
+    todoDueDate.textContent = format(new Date(dueDateValue), "MM/dd/yyyy");
 
     if (completeValue) {
       checkComplete.appendChild(checkIcon);
