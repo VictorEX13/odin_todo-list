@@ -179,6 +179,19 @@ footer {
   background-color: rgb(233, 233, 233);
 }
 
+.details-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
 form {
   display: flex;
   flex: 1;
@@ -262,6 +275,13 @@ select {
   border-radius: 3px;
 }
 
+.todo-details {
+  padding: 0.5%;
+  border: 1px solid rgb(131, 131, 245);
+  background-color: white;
+  border-radius: 3px;
+}
+
 .todo-check,
 .todo-edit,
 .todo-delete {
@@ -336,8 +356,13 @@ a:hover {
 .add-button:hover,
 .times-button:hover,
 .todo-edit:hover,
-.todo-delete:hover {
+.todo-delete:hover,
+.todo-details:hover {
   cursor: pointer;
+}
+
+.todo-details:hover {
+  background-color: rgb(131, 131, 245);
 }
 
 .project-list li:hover,
@@ -349,4 +374,9 @@ a:hover {
 
 .checked-item {
   text-decoration: line-through;
+}
+
+.modal > span {
+  font-size: 2rem;
+  font-weight: bold;
 }

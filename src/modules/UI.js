@@ -545,6 +545,82 @@ class UI {
     body.appendChild(modal);
   }
 
+  static renderItemDetailsModal(projectTitle, itemIndex) {
+    const body = document.querySelector("body");
+    const modal = document.createElement("div");
+    const fieldContainer = document.createElement("div");
+    const detailsContainer = document.createElement("div");
+
+    const title = document.createElement("h3");
+    const selectedProject = document.createElement("p");
+    const description = document.createElement("p");
+    const dueDate = document.createElement("p");
+    const priority = document.createElement("p");
+    const status = document.createElement("p");
+
+    const selectedItem =
+      UI.projectList.projects[UI.selectedTab].itemList[itemIndex];
+
+    title.textContent = selectedItem.title;
+    selectedProject.textContent = projectTitle;
+    description.textContent = selectedItem.description;
+    dueDate.textContent = selectedItem.dueDate;
+    priority.textContent = selectedItem.priority;
+    status.textContent = selectedItem.complete ? "Completed" : "Uncompleted";
+
+    const closeButton = document.createElement("button");
+
+    const selectedProjectLabel = document.createElement("span");
+    const descriptionLabel = document.createElement("span");
+    const dueDateLabel = document.createElement("span");
+    const priorityLabel = document.createElement("span");
+    const statusLabel = document.createElement("span");
+
+    selectedProjectLabel.textContent = "Project:";
+    descriptionLabel.textContent = "Description:";
+    dueDateLabel.textContent = "Date:";
+    priorityLabel.textContent = "Priority:";
+    statusLabel.textContent = "Status:";
+
+    const xIcon = document.createElement("i");
+    xIcon.classList.add("fa-solid", "fa-xmark");
+
+    modal.classList.add("modal");
+    fieldContainer.classList.add("field-container");
+    detailsContainer.classList.add('details-container')
+    closeButton.classList.add("times-button");
+
+    const selectedProjectContainer = fieldContainer.cloneNode(true);
+    const descriptionContainer = fieldContainer.cloneNode(true);
+    const dueDateContainer = fieldContainer.cloneNode(true);
+    const priorityContainer = fieldContainer.cloneNode(true);
+    const statusContainer = fieldContainer.cloneNode(true);
+
+    selectedProjectContainer.append(selectedProjectLabel, selectedProject);
+    descriptionContainer.append(descriptionLabel, description);
+    dueDateContainer.append(dueDateLabel, dueDate);
+    priorityContainer.append(priorityLabel, priority);
+    statusContainer.append(statusLabel, status);
+
+    closeButton.appendChild(xIcon);
+
+    closeButton.addEventListener("click", () => {
+      modal.parentElement.removeChild(modal);
+    });
+
+    detailsContainer.append(
+      title,
+      selectedProjectContainer,
+      descriptionContainer,
+      dueDateContainer,
+      priorityContainer,
+      statusContainer
+    );
+
+    modal.append(detailsContainer, closeButton);
+    body.appendChild(modal);
+  }
+
   static renderProjects() {
     const navProjectList = document.querySelector(".project-list");
 
@@ -612,6 +688,7 @@ class UI {
     const article = document.createElement("article");
     const checkComplete = document.createElement("div");
     const todoTitle = document.createElement("span");
+    const todoDetails = document.createElement("div");
     const todoDueDate = document.createElement("span");
     const todoEdit = document.createElement("div");
     const todoDelete = document.createElement("div");
@@ -621,6 +698,7 @@ class UI {
     const deleteIcon = document.createElement("i");
 
     todoTitle.classList.add("todo-title");
+    todoDetails.classList.add("todo-details");
     todoDueDate.classList.add("todo-due-date");
     checkComplete.classList.add("todo-check");
     todoEdit.classList.add("todo-edit");
@@ -641,6 +719,7 @@ class UI {
       : article.classList.add("high");
 
     todoTitle.textContent = titleValue;
+    todoDetails.textContent = "Details";
     todoDueDate.textContent = dueDateValue;
 
     if (completeValue) {
@@ -662,6 +741,13 @@ class UI {
       isChecked
         ? checkComplete.replaceChildren()
         : checkComplete.appendChild(checkIcon);
+    });
+
+    todoDetails.addEventListener("click", () => {
+      UI.renderItemDetailsModal(
+        projectTitle,
+        Number(article.getAttribute(`data-${projectTitle}-index`))
+      );
     });
 
     todoEdit.addEventListener("click", () => {
@@ -687,7 +773,14 @@ class UI {
       }
     });
 
-    article.append(checkComplete, todoTitle, todoDueDate, todoEdit, todoDelete);
+    article.append(
+      checkComplete,
+      todoTitle,
+      todoDetails,
+      todoDueDate,
+      todoEdit,
+      todoDelete
+    );
 
     return article;
   }
