@@ -365,10 +365,12 @@ class UI {
 
         container.appendChild(
           UI.createTodoArticle(
+            UI.projectList.projects[selectedIndex].title,
             submittedTitle.value,
             submittedDueDate.value,
             submittedPriority.value,
-            false
+            false,
+            UI.projectList.projects[selectedIndex].itemList.length - 1
           )
         );
 
@@ -393,7 +395,8 @@ class UI {
         container.appendChild(
           UI.createNoteArticle(
             UI.noteList.notes[UI.noteList.notes.length - 1].title,
-            UI.noteList.notes[UI.noteList.notes.length - 1].description
+            UI.noteList.notes[UI.noteList.notes.length - 1].description,
+            UI.noteList.notes.length - 1
           )
         );
 
@@ -451,10 +454,12 @@ class UI {
     ) {
       container.append(
         UI.createTodoArticle(
+          UI.projectList.projects[UI.selectedTab].title,
           UI.projectList.projects[UI.selectedTab].itemList[i].title,
           UI.projectList.projects[UI.selectedTab].itemList[i].dueDate,
           UI.projectList.projects[UI.selectedTab].itemList[i].priority,
-          UI.projectList.projects[UI.selectedTab].itemList[i].complete
+          UI.projectList.projects[UI.selectedTab].itemList[i].complete,
+          i
         )
       );
     }
@@ -466,10 +471,12 @@ class UI {
   }
 
   static createTodoArticle(
+    projectTitle,
     titleValue,
     dueDateValue,
     priorityValue,
-    completeValue
+    completeValue,
+    itemIndex
   ) {
     const article = document.createElement("article");
     const checkComplete = document.createElement("div");
@@ -494,6 +501,8 @@ class UI {
 
     article.classList.add("todo-article");
 
+    article.setAttribute(`data-${projectTitle}-index`, String(itemIndex));
+
     priorityValue === "low"
       ? article.classList.add("low")
       : priorityValue === "normal"
@@ -515,6 +524,22 @@ class UI {
         : checkComplete.appendChild(checkIcon);
     });
 
+    todoDelete.addEventListener("click", () => {
+      UI.projectList.projects[UI.selectedTab].removeItem(itemIndex);
+      article.parentElement.removeChild(article);
+
+      for (
+        let i = Number(article.getAttribute(`data-${projectTitle}-index`));
+        i < UI.projectList.projects[UI.selectedTab].itemList.length;
+        i++
+      ) {
+        const articleToUpdate = document.querySelector(
+          `[data-${projectTitle}-index="${i + 1}"]`
+        );
+        articleToUpdate.setAttribute(`data-${projectTitle}-index`, String(i));
+      }
+    });
+
     article.append(checkComplete, todoTitle, todoDueDate, todoEdit, todoDelete);
 
     return article;
@@ -531,7 +556,8 @@ class UI {
       container.append(
         UI.createNoteArticle(
           UI.noteList.notes[i].title,
-          UI.noteList.notes[i].description
+          UI.noteList.notes[i].description,
+          i
         )
       );
     }
@@ -542,7 +568,7 @@ class UI {
     selectedTabSection.appendChild(container);
   }
 
-  static createNoteArticle(titleValue, descriptionValue) {
+  static createNoteArticle(titleValue, descriptionValue, itemIndex) {
     const article = document.createElement("article");
     const div = document.createElement("div");
     const noteContent = document.createElement("div");
@@ -560,7 +586,25 @@ class UI {
     article.classList.add("note-article");
     deleteButton.classList.add("times-button");
 
+    article.setAttribute("data-note-index", String(itemIndex));
+
     deleteButton.appendChild(xIcon);
+
+    deleteButton.addEventListener("click", () => {
+      UI.noteList.removeNote(article.getAttribute("data-note-index"));
+      article.parentElement.removeChild(article);
+
+      for (
+        let i = Number(article.getAttribute("data-note-index"));
+        i < UI.noteList.notes.length;
+        i++
+      ) {
+        const articleToUpdate = document.querySelector(
+          `[data-note-index="${i + 1}"]`
+        );
+        articleToUpdate.setAttribute("data-note-index", String(i));
+      }
+    });
 
     div.append(noteContent, deleteButton);
 

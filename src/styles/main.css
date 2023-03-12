@@ -327,10 +327,22 @@ a:hover {
   border-color: var(--main-color-dark);
 }
 
+.todo-check {
+  background-color: white;
+}
+
+.project-list li:hover,
+.add-project:hover,
+.add-button:hover,
+.times-button:hover,
+.todo-edit:hover,
+.todo-delete:hover {
+  cursor: pointer;
+}
+
 .project-list li:hover,
 .add-project:hover,
 .add-button:hover,
 .times-button:hover {
-  cursor: pointer;
   background-color: rgb(170, 170, 170);
 }
