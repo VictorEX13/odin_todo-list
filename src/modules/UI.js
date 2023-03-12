@@ -414,6 +414,137 @@ class UI {
     body.appendChild(modal);
   }
 
+  static renderEditItemModal(projectTitle, itemIndex) {
+    const body = document.querySelector("body");
+    const modal = document.createElement("div");
+    const form = document.createElement("form");
+    const inputGroup = document.createElement("div");
+    const inputContainer = document.createElement("div");
+
+    const title = document.createElement("input");
+    const description = document.createElement("textarea");
+    const dueDate = document.createElement("input");
+    const priority = document.createElement("select");
+    const submitButton = document.createElement("button");
+    const closeButton = document.createElement("button");
+
+    const low = document.createElement("option");
+    const normal = document.createElement("option");
+    const high = document.createElement("option");
+
+    const titleLabel = document.createElement("label");
+    const descriptionLabel = document.createElement("label");
+    const dueDateLabel = document.createElement("label");
+    const priorityLabel = document.createElement("label");
+
+    title.id = "title";
+    description.id = "description";
+    dueDate.id = "due-date";
+    priority.id = "priority";
+
+    title.setAttribute("required", "true");
+    description.setAttribute("required", "true");
+    dueDate.setAttribute("required", "true");
+    priority.setAttribute("required", "true");
+
+    titleLabel.setAttribute("for", "title");
+    descriptionLabel.setAttribute("for", "description");
+    dueDateLabel.setAttribute("for", "due-date");
+    priorityLabel.setAttribute("for", "priority");
+    titleLabel.textContent = "Title";
+    descriptionLabel.textContent = "Description";
+    dueDateLabel.textContent = "Date";
+    priorityLabel.textContent = "Priority";
+
+    const xIcon = document.createElement("i");
+    xIcon.classList.add("fa-solid", "fa-xmark");
+
+    modal.classList.add("modal");
+    inputContainer.classList.add("input-container");
+    inputGroup.classList.add("input-group");
+    submitButton.classList.add("submit-button");
+    closeButton.classList.add("times-button");
+
+    submitButton.textContent = "Add";
+
+    const titleContainer = inputContainer.cloneNode(true);
+    const descriptionContainer = inputContainer.cloneNode(true);
+    const dueDateContainer = inputContainer.cloneNode(true);
+    const priorityContainer = inputContainer.cloneNode(true);
+
+    titleContainer.append(titleLabel, title);
+    descriptionContainer.append(descriptionLabel, description);
+    dueDateContainer.append(dueDateLabel, dueDate);
+    priorityContainer.append(priorityLabel, priority);
+
+    closeButton.appendChild(xIcon);
+    inputGroup.append(titleContainer, descriptionContainer);
+
+    dueDate.setAttribute("type", "date");
+    low.setAttribute("value", "low");
+    normal.setAttribute("value", "normal");
+    high.setAttribute("value", "high");
+
+    low.textContent = "low";
+    normal.textContent = "normal";
+    high.textContent = "high";
+
+    priority.append(low, normal, high);
+
+    inputGroup.append(dueDateContainer, priorityContainer);
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const submittedTitle = document.querySelector("#title");
+      const submittedDescription = document.querySelector("#description");
+      const submittedDueDate = document.querySelector("#due-date");
+      const submittedPriority = document.querySelector("#priority");
+
+      UI.projectList.projects[UI.selectedTab].itemList[itemIndex].title =
+        submittedTitle.value;
+      UI.projectList.projects[UI.selectedTab].itemList[itemIndex].description =
+        submittedDescription.value;
+      UI.projectList.projects[UI.selectedTab].itemList[itemIndex].dueDate =
+        submittedDueDate.value;
+      UI.projectList.projects[UI.selectedTab].itemList[itemIndex].priority =
+        submittedPriority.value;
+
+      const articleIndex = `[data-${projectTitle}-index="${itemIndex}"]`;
+
+      const articleToUpdate = document.querySelector(`${articleIndex}`);
+
+      articleToUpdate.classList.remove("low", "normal", "high");
+      articleToUpdate.classList.add(submittedPriority.value);
+
+      const articleTitle = document.querySelector(
+        `${articleIndex}>.todo-title`
+      );
+
+      const articleDueDate = document.querySelector(
+        `${articleIndex}>.todo-due-date`
+      );
+
+      articleTitle.textContent = submittedTitle.value;
+
+      articleDueDate.textContent = submittedDueDate.value;
+
+      submittedTitle.value = "";
+      submittedDescription.value = "";
+      submittedDueDate.value = "";
+      submittedPriority.value = "low";
+    });
+
+    closeButton.addEventListener("click", () => {
+      modal.parentElement.removeChild(modal);
+    });
+
+    form.append(inputGroup, submitButton);
+
+    modal.append(form, closeButton);
+    body.appendChild(modal);
+  }
+
   static renderProjects() {
     const navProjectList = document.querySelector(".project-list");
 
@@ -512,16 +643,32 @@ class UI {
     todoTitle.textContent = titleValue;
     todoDueDate.textContent = dueDateValue;
 
-    completeValue && checkComplete.appendChild(checkIcon);
+    if (completeValue) {
+      checkComplete.appendChild(checkIcon);
+      todoTitle.classList.toggle("checked-item");
+    }
     todoEdit.appendChild(editIcon);
     todoDelete.appendChild(deleteIcon);
 
     checkComplete.addEventListener("click", () => {
-      const checkIcon = checkComplete.hasChildNodes();
+      const isChecked = checkComplete.hasChildNodes();
 
-      checkIcon
+      UI.projectList.projects[UI.selectedTab].itemList[
+        Number(article.getAttribute(`data-${projectTitle}-index`))
+      ].complete = !isChecked;
+
+      todoTitle.classList.toggle("checked-item");
+
+      isChecked
         ? checkComplete.replaceChildren()
         : checkComplete.appendChild(checkIcon);
+    });
+
+    todoEdit.addEventListener("click", () => {
+      UI.renderEditItemModal(
+        projectTitle,
+        Number(article.getAttribute(`data-${projectTitle}-index`))
+      );
     });
 
     todoDelete.addEventListener("click", () => {
@@ -587,8 +734,21 @@ class UI {
     deleteButton.classList.add("times-button");
 
     article.setAttribute("data-note-index", String(itemIndex));
+    title.setAttribute("contenteditable", "true");
+    description.setAttribute("contenteditable", "true");
 
     deleteButton.appendChild(xIcon);
+
+    title.addEventListener("blur", () => {
+      UI.noteList.notes[Number(article.getAttribute("data-note-index"))].title =
+        title.textContent;
+    });
+
+    description.addEventListener("blur", () => {
+      UI.noteList.notes[
+        Number(article.getAttribute("data-note-index"))
+      ].description = description.textContent;
+    });
 
     deleteButton.addEventListener("click", () => {
       UI.noteList.removeNote(article.getAttribute("data-note-index"));
